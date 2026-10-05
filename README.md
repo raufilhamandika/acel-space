@@ -4,9 +4,30 @@ Website kecil yang dibuat sebagai hadiah ulang tahun untuk Acel—berisi
 kenangan, foto-foto pilihan, wishes, dan surat yang bisa dibuka dari amplop
 interaktif.
 
+<<<<<<< HEAD
 **Lihat website:** <https://raufilhamandika.github.io/acel-space/>
 
 ## Yang ada di dalamnya
+=======
+🌐 **Live Demo:** [raufilhamandika.github.io/acel-space](https://raufilhamandika.github.io/acel-space/)
+
+🔑 **Kode Rahasia / Password:** `140826`
+
+Website dibuat dengan HTML, CSS, dan JavaScript biasa. Tidak perlu memasang
+aplikasi atau paket tambahan untuk mengeditnya.
+
+---
+
+## 💬 Apresiasi & Kontak
+Suka sama hasilnya atau mau dibuatkan website kustom/desain seperti ini juga? 
+
+- 📸 Follow Instagram: [@rauffffuf](https://www.instagram.com/rauffffuf/)
+- 📩 Diskusi / Pesan Jasa: DM via Instagram atau buka issue di repositori ini.
+
+---
+
+## Cara membuka website
+>>>>>>> a7ef76233db84693bfdc695d727b98e43efb7e20
 
 - Halaman pembuka dengan kode kejutan
 - Ucapan dan cerita singkat tentang kenangan
