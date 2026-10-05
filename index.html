@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A little birthday universe, made with love for Acel."
+    />
+    <meta name="theme-color" content="#190b13" />
+    <title>For Acel, with love</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <!-- Hiasan cahaya latar di seluruh halaman. -->
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <main>
+      <!-- Halaman pembuka: kode yang benar akan membuka isi website. -->
+      <section class="gate" id="gate" aria-labelledby="gate-title">
+        <div class="gate-stars" aria-hidden="true"></div>
+        <div class="gate-card">
+          <span class="eyebrow"><span class="tiny-star">✳</span> A LITTLE
+            SOMETHING FOR YOU</span>
+          <div class="lock-seal" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M15 21v-5a9 9 0 0 1 18 0v5" />
+              <rect x="11" y="21" width="26" height="20" rx="5" />
+              <path d="M24 29v5" />
+              <circle cx="24" cy="28" r="1.5" />
+            </svg>
+          </div>
+          <p class="gate-kicker">SOME THINGS ARE WORTH THE WAIT</p>
+          <h1 id="gate-title">A little world,<br /><em>just for you.</em></h1>
+          <p class="gate-copy">
+            Ada satu tanggal kecil yang menyimpan banyak cerita.
+            Enter the secret code to come in.
+          </p>
+          <form class="code-form" id="code-form">
+            <label class="sr-only" for="secret-code">Secret code</label>
+            <input
+              id="secret-code"
+              name="secret-code"
+              type="password"
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="12"
+              placeholder="· · · · · ·"
+              aria-describedby="code-error"
+              required
+            />
+            <button type="submit" aria-label="Buka halaman">
+              <span>Let me in</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </form>
+          <p class="code-error" id="code-error" role="alert" aria-live="polite"></p>
+          <span class="gate-footnote">A tiny key to a very big feeling ♡</span>
+        </div>
+        <span class="gate-orbit orbit-one" aria-hidden="true"></span>
+        <span class="gate-orbit orbit-two" aria-hidden="true"></span>
+      </section>
+
+      <div class="site-content" id="site-content" hidden>
+        <!-- Logo kecil dan penanda bahwa hari ini milik Acel. -->
+        <header class="topbar">
+          <a class="brand" href="#home" aria-label="For Acel — home">
+            <span class="brand-mark">a.</span>
+            <span>for <strong>acel</strong></span>
+          </a>
+          <span class="topbar-date"><span class="live-dot"></span> A DAY
+            THAT'S ALL YOURS</span>
+        </header>
+
+        <!-- Menu navigasi yang tetap terlihat saat halaman digulir. -->
+        <nav class="chapter-nav" aria-label="Navigasi halaman">
+          <a class="chapter-brand" href="#home">♡ &nbsp; Acel's Birthday</a>
+          <div class="chapter-links">
+            <a class="chapter-link active" href="#home">Surface</a>
+            <a class="chapter-link" href="#memories">Our Memories</a>
+            <a class="chapter-link" href="#gallery">Gallery</a>
+            <a class="chapter-link" href="#letter">The Letter</a>
+            <a class="chapter-link" href="#wishes">Wishes</a>
+          </div>
+          <span class="chapter-sparkle" aria-hidden="true">✳</span>
+        </nav>
+
+        <!-- Beranda: ganti src dan alt untuk mengganti foto utama. -->
+        <section class="hero section-wrap" id="home">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="tiny-star">✳</span> TODAY IS
+              YOURS, ACEL</p>
+            <h1>My favorite<br /><em>person.</em></h1>
+            <p class="hero-description">
+              Some people make the ordinary feel like magic. Somehow, you do
+              that just by being you. Hari ini, semesta punya alasan ekstra
+              untuk merayakanmu.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#memories">
+                Begin the journey <span aria-hidden="true">↗</span>
+              </a>
+              <a class="button button-quiet" href="#letter">
+                Jump straight to the letter <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+            <p class="hero-footnote"><span aria-hidden="true">✦</span> MADE
+              WITH LOVE, JUST FOR YOU</p>
+          </div>
+          <div class="hero-art">
+            <img
+              class="hero-image hero-photo"
+              src="assets/birthday-screen.jpeg"
+              alt="Acel tampil di layar saat karaoke bersama."
+              fetchpriority="high"
+            />
+            <div class="polaroid-note">
+              <span class="note-star" aria-hidden="true">✳</span>
+              <span>My favorite view<br />is any day with you.</span>
+              <span class="note-signature">— always, me</span>
+            </div>
+            <span class="art-orbit" aria-hidden="true"></span>
+            <span class="art-sparkle sparkle-one" aria-hidden="true">✳</span>
+            <span class="art-sparkle sparkle-two" aria-hidden="true">✦</span>
+          </div>
+          <a class="scroll-cue" href="#memories">
+            <span>SCROLL TO UNWRAP</span><span aria-hidden="true">↓</span>
+          </a>
+        </section>
+
+        <!-- Kenangan singkat; ubah judul dan cerita pada setiap kartu. -->
+        <section class="memories section-wrap" id="memories">
+          <div class="section-heading">
+            <p class="eyebrow"><span class="tiny-star">✳</span> LITTLE
+              MOMENTS, BIG FEELINGS</p>
+            <h2>Some of my favorite<br /><em>things about us.</em></h2>
+            <p class="section-intro">
+              Cerita-cerita kecil yang mungkin sederhana, but somehow they
+              became some of my favorite things.
+            </p>
+          </div>
+          <div class="memory-grid">
+            <article class="memory-card">
+              <span class="memory-number">01 / A SOFT PLACE</span>
+              <span class="memory-icon" aria-hidden="true">☾</span>
+              <h3>The little talks</h3>
+              <p>From random little things to everything at once. Somehow,
+                talking to you always feels like coming home.</p>
+              <span class="memory-underline"></span>
+            </article>
+            <article class="memory-card memory-card-highlight">
+              <span class="memory-number">02 / OUR KIND OF FUN</span>
+              <span class="memory-icon" aria-hidden="true">✳</span>
+              <h3>Laughing too much</h3>
+              <p>All the silly jokes, the almost-funny stories, and those
+                moments when nothing else matters.</p>
+              <span class="memory-underline"></span>
+            </article>
+            <article class="memory-card">
+              <span class="memory-number">03 / JUST BEING YOU</span>
+              <span class="memory-icon" aria-hidden="true">♡</span>
+              <h3>Your lovely heart</h3>
+              <p>The way you care in your own little ways. You make even
+                ordinary days feel a bit more golden.</p>
+              <span class="memory-underline"></span>
+            </article>
+          </div>
+          <p class="personal-note">More stories to be added, one day at a time
+            <span aria-hidden="true">♡</span></p>
+        </section>
+
+        <!-- Galeri: setiap kartu menyimpan alamat foto, teks, dan deskripsinya. -->
+        <section class="gallery-section section-wrap" id="gallery">
+          <div class="section-heading gallery-heading">
+            <div>
+              <p class="eyebrow"><span class="tiny-star">✳</span> A TINY
+                COLLECTION</p>
+              <h2>A few of my <em>favorite<br />shots of you.</em></h2>
+            </div>
+            <p class="gallery-hint">Tap any photo to peek closer <span
+                aria-hidden="true">↗</span></p>
+          </div>
+          <div class="gallery-grid">
+            <button class="gallery-card gallery-one" type="button"
+              data-title="A cozy little memory"
+              data-description="A cozy little moment together, with one of our favorite stories in hand."
+              data-image="assets/reading-together.jpeg"
+              data-photo-alt="Acel dan pasangannya berfoto bersama sambil memegang buku."
+            >
+              <span class="gallery-art"><img class="gallery-photo"
+                  src="assets/reading-together.jpeg" alt="" loading="lazy" /></span>
+              <span class="gallery-open" aria-hidden="true">↗</span>
+              <span class="gallery-caption">
+                <span class="gallery-tag">01 — KEEP THIS ONE</span>
+                <span class="gallery-title">that soft kind of happiness</span>
+              </span>
+            </button>
+            <button class="gallery-card gallery-two" type="button"
+              data-title="Under the city lights"
+              data-description="A late-night little memory, made brighter just because we were there together."
+              data-image="assets/night-selfie.jpeg"
+              data-photo-alt="Acel dan pasangannya mengambil swafoto pada malam hari."
+            >
+              <span class="gallery-art"><img class="gallery-photo"
+                  src="assets/night-selfie.jpeg" alt="" loading="lazy" /></span>
+              <span class="gallery-open" aria-hidden="true">↗</span>
+              <span class="gallery-caption">
+                <span class="gallery-tag">02 — THE LITTLE THINGS</span>
+                <span class="gallery-title">late nights & favorite people</span>
+              </span>
+            </button>
+            <button class="gallery-card gallery-three" type="button"
+              data-title="Our favorite kind of silly"
+              data-description="Some of my favorite moments are unplanned ones, when we can just be our regular, silly selves."
+              data-image="assets/just-being-us.jpeg"
+              data-photo-alt="Acel dan pasangannya berfoto bersama dengan ekspresi konyol."
+            >
+              <span class="gallery-art"><img class="gallery-photo"
+                  src="assets/just-being-us.jpeg" alt="" loading="lazy" /></span>
+              <span class="gallery-open" aria-hidden="true">↗</span>
+              <span class="gallery-caption">
+                <span class="gallery-tag">03 — JUST BEING US</span>
+                <span class="gallery-title">our favorite kind of silly</span>
+              </span>
+            </button>
+            <button class="gallery-card gallery-four" type="button"
+              data-title="The world through your eyes"
+              data-description="I love seeing the world through the little moments you choose to capture."
+              data-image="assets/capturing-daylight.jpeg"
+              data-photo-alt="Acel mengambil foto di luar ruangan pada siang hari."
+            >
+              <span class="gallery-art"><img class="gallery-photo"
+                  src="assets/capturing-daylight.jpeg" alt="" loading="lazy" /></span>
+              <span class="gallery-open" aria-hidden="true">↗</span>
+              <span class="gallery-caption">
+                <span class="gallery-tag">04 — THE WORLD THROUGH YOUR EYES</span>
+                <span class="gallery-title">the way you see the world</span>
+              </span>
+            </button>
+          </div>
+          <p class="gallery-footnote"><span aria-hidden="true">♡</span> A few
+            little moments, saved here just for you.</p>
+        </section>
+
+        <!-- Surat untuk Acel. Ubah paragraf di sini untuk mengganti isi surat. -->
+        <section class="letter-section section-wrap" id="letter">
+          <div class="letter-heading">
+            <p class="eyebrow"><span class="tiny-star">✳</span> A FEW WORDS,
+              FROM MY HEART</p>
+            <h2>Open when <em>you need a little love.</em></h2>
+          </div>
+          <div class="letter-opening">
+            <button
+              class="letter-envelope-button"
+              id="letter-envelope-button"
+              type="button"
+              aria-expanded="false"
+              aria-controls="letter-card"
+              aria-label="Buka surat untuk Acel"
+            >
+              <span class="letter-envelope" aria-hidden="true">
+                <span class="envelope-back"></span>
+                <span class="envelope-letter"></span>
+                <span class="envelope-flap"></span>
+                <span class="envelope-front"></span>
+                <img class="envelope-seal" src="assets/letter-seal.png" alt="" />
+              </span>
+              <span class="envelope-instruction">A little letter, just for you</span>
+              <span class="envelope-action">Open your letter <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+          <article class="letter-card" id="letter-card" hidden>
+              <span class="letter-date">TO ACEL, ON YOUR SPECIAL DAY</span>
+              <h3>Dear Acel,</h3>
+              <p>
+                I may not always be good at putting my feelings into words.
+                Sometimes, there are just too many things I want to say, and
+                they end up staying quietly in my heart.
+              </p>
+              <p>
+                But today, I want you to know one thing: I'm grateful that I
+                got to meet you.
+              </p>
+              <p>
+                Thank you for every laugh, every little story, the ordinary
+                days that somehow became meaningful, and all the little things
+                you do that you may never realize are special.
+              </p>
+              <p>
+                As you begin another year of your life, I also have one little
+                prayer for you. May you always be given a heart that stays close
+                to the Qur'an. May the verses you've worked so hard to memorize
+                never fade away, and may you always have the strength to keep
+                them alive, one verse at a time.
+              </p>
+              <p>
+                If someday you feel tired or unmotivated to do your
+                <em>murajaah</em>, I hope you remember why you started in the
+                first place.
+              </p>
+              <p>
+                I want to see you not only grow older, but also grow closer to
+                Allah.
+              </p>
+              <p>
+                And if you'll let me be part of that journey, I'll gladly remind
+                you to do your <em>murajaah</em>, even if you end up getting
+                annoyed because I'm being a little too nagging. ♡
+              </p>
+              <p class="letter-blessing">
+                <strong>Barakallahu fii umrik, Acel.</strong><br />
+                Thank you for being you.
+              </p>
+              <div class="letter-signoff">
+                <span>With so much love, always</span>
+                <span class="signature-heart" aria-hidden="true">♡</span>
+              </div>
+          </article>
+          <span class="letter-decoration letter-deco-one" aria-hidden="true">✳</span>
+          <span class="letter-decoration letter-deco-two" aria-hidden="true">✦</span>
+        </section>
+
+        <!-- Kartu wishes dapat diklik untuk menandai wish yang disukai. -->
+        <section class="wishes-section section-wrap" id="wishes">
+          <div class="section-heading">
+            <p class="eyebrow"><span class="tiny-star">✳</span> LITTLE
+              WISHES FOR YOUR NEW CHAPTER</p>
+            <h2>Things I hope <em>find you.</em></h2>
+            <p class="section-intro">
+              Pick a little card. A little reminder for today—and every day
+              after.
+            </p>
+          </div>
+          <div class="wishes-grid">
+            <button class="wish-card" type="button">
+              <span class="wish-card-top"><span aria-hidden="true">✦</span><span>01</span></span>
+              <span class="wish-text">May this year give you all the calm of
+                slow mornings, the joy of things you've been waiting for, and
+                plenty of reasons to smile.</span>
+              <span class="wish-hint">A WISH FOR YOU <span aria-hidden="true">↗</span></span>
+            </button>
+            <button class="wish-card" type="button">
+              <span class="wish-card-top"><span aria-hidden="true">☼</span><span>02</span></span>
+              <span class="wish-text">I hope your days stay bright, your
+                heart stays soft, and you never forget how loved you are.</span>
+              <span class="wish-hint">A WISH FOR YOU <span aria-hidden="true">↗</span></span>
+            </button>
+            <button class="wish-card" type="button">
+              <span class="wish-card-top"><span aria-hidden="true">✧</span><span>03</span></span>
+              <span class="wish-text">May every little thing you love find
+                its way to you, exactly when you need it most.</span>
+              <span class="wish-hint">A WISH FOR YOU <span aria-hidden="true">↗</span></span>
+            </button>
+            <button class="wish-card" type="button">
+              <span class="wish-card-top"><span aria-hidden="true">❋</span><span>04</span></span>
+              <span class="wish-text">Wherever this next chapter takes you,
+                semoga selalu ada alasan kecil untuk merasa baik-baik saja.</span>
+              <span class="wish-hint">A WISH FOR YOU <span aria-hidden="true">↗</span></span>
+            </button>
+            <button class="wish-card" type="button">
+              <span class="wish-card-top"><span aria-hidden="true">↓</span><span>05</span></span>
+              <span class="wish-text">May you keep growing, stay grateful,
+                and find joy in both your big milestones and the small,
+                everyday ones.</span>
+              <span class="wish-hint">A WISH FOR YOU <span aria-hidden="true">↗</span></span>
+            </button>
+            <button class="wish-card" type="button">
+              <span class="wish-card-top"><span aria-hidden="true">♡</span><span>06</span></span>
+              <span class="wish-text">Barakallah fii umrik, love. Cheers buat
+                another year penuh memories. Semoga semua yang baik pelan-pelan
+                datang ke kamu.</span>
+              <span class="wish-hint">A WISH FOR YOU <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+          <p class="wish-afterthought">Keep one close for a rainy day <span
+              aria-hidden="true">♡</span></p>
+        </section>
+
+        <!-- Penutup: tombol "Make a wish" memadamkan atau menyalakan lilin. -->
+        <section class="finale section-wrap" id="finale">
+          <span class="eyebrow"><span class="tiny-star">✳</span> ONE LAST
+            LITTLE THING</span>
+          <h2>Barakallah fii umrik,<br /><em>dear Acel.</em></h2>
+          <p class="finale-copy">
+            Thank you for letting me make a little fuss over you today.
+            Semoga tahun ini penuh hal-hal indah, tawa yang lebih lepas, dan
+            hal-hal baik yang datang satu per satu. Here's to all the lovely
+            little moments still waiting for you.
+          </p>
+          <div class="candles" aria-label="Lilin ulang tahun yang bisa ditiup">
+            <span class="candle"><span class="flame"></span><span class="candle-wick"></span></span>
+            <span class="candle"><span class="flame"></span><span class="candle-wick"></span></span>
+            <span class="candle"><span class="flame"></span><span class="candle-wick"></span></span>
+            <span class="candle"><span class="flame"></span><span class="candle-wick"></span></span>
+            <span class="candle"><span class="flame"></span><span class="candle-wick"></span></span>
+          </div>
+          <button class="wish-button" id="wish-button" type="button">
+            Make a wish <span aria-hidden="true">✦</span>
+          </button>
+          <p class="wish-result" id="wish-result" aria-live="polite"></p>
+          <a class="back-to-top" href="#home">Back to the beginning <span
+              aria-hidden="true">↑</span></a>
+          <span class="finale-sparkle finale-sparkle-one" aria-hidden="true">✳</span>
+          <span class="finale-sparkle finale-sparkle-two" aria-hidden="true">✦</span>
+        </section>
+
+        <!-- Penutup kecil di bagian paling bawah halaman. -->
+        <footer class="footer">
+          <span>made with love, for acel <span aria-hidden="true">♡</span></span>
+          <span>THIS LITTLE UNIVERSE IS YOURS</span>
+        </footer>
+      </div>
+    </main>
+
+    <!-- Jendela foto besar yang muncul saat kartu galeri diklik. -->
+    <dialog class="photo-dialog" id="photo-dialog" aria-labelledby="dialog-title">
+      <button class="dialog-close" id="dialog-close" type="button"
+        aria-label="Tutup">×</button>
+      <img class="dialog-photo" id="dialog-photo" src="" alt="" />
+      <p class="eyebrow">A LITTLE MOMENT</p>
+      <h2 id="dialog-title"></h2>
+      <p id="dialog-description"></p>
+    </dialog>
+  </body>
+</html>
