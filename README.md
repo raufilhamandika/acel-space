@@ -1,78 +1,64 @@
-# Website Ulang Tahun Acel
+# For Acel, with love ♡
 
-Website kecil ini dibuat sebagai hadiah ulang tahun untuk Acel. Isinya ada
-halaman kode rahasia, ucapan pembuka, cerita kenangan, galeri foto, surat,
-kartu wishes, dan penutup dengan lilin ulang tahun.
+Website kecil yang dibuat sebagai hadiah ulang tahun untuk Acel—berisi
+kenangan, foto-foto pilihan, wishes, dan surat yang bisa dibuka dari amplop
+interaktif.
 
-Website dibuat dengan HTML, CSS, dan JavaScript biasa. Tidak perlu memasang
-aplikasi atau paket tambahan untuk mengeditnya.
+**Lihat website:** <https://raufilhamandika.github.io/acel-space/>
 
-## Cara membuka website
+## Yang ada di dalamnya
 
-Cara paling sederhana: buka file `index.html` di browser.
+- Halaman pembuka dengan kode kejutan
+- Ucapan dan cerita singkat tentang kenangan
+- Galeri foto yang bisa dibuka untuk melihat gambar lebih dekat
+- Amplop interaktif dengan segel foto dan surat pribadi
+- Kartu wishes yang bisa dipilih
+- Lilin ulang tahun interaktif
+- Animasi lembut dan tampilan yang menyesuaikan layar ponsel
 
-Kalau ingin menjalankannya lewat server lokal, buka terminal di folder proyek,
-lalu jalankan:
+## Dibuat dengan
+
+Website ini menggunakan HTML, CSS, dan JavaScript biasa—tanpa framework atau
+paket tambahan.
+
+## Menjalankan di komputer
+
+1. Unduh atau clone repository ini.
+2. Buka folder proyek.
+3. Buka `index.html` di browser.
+
+Atau, jalankan server lokal dari terminal di folder proyek:
 
 ```powershell
 py -m http.server 8000
 ```
 
-Setelah itu buka <http://localhost:8000> di browser. Untuk menghentikan server,
-kembali ke terminal dan tekan `Ctrl+C`.
+Kemudian kunjungi <http://localhost:8000>.
 
-## File penting
+## Mengubah isi website
 
-- `index.html` berisi tulisan, susunan halaman, dan nama file foto.
-- `styles.css` mengatur warna, bentuk, ukuran, animasi, dan tampilan ponsel.
-- `script.js` mengatur kode pembuka dan fitur yang bisa diklik.
-- `assets/` berisi foto yang digunakan website.
-- Gambar segel amplop surat ada di `assets/letter-seal.png`.
+- **Tulisan dan susunan halaman:** edit `index.html`. Cari komentar HTML untuk
+  menemukan bagian pembuka, kenangan, galeri, surat, dan wishes.
+- **Foto:** letakkan foto di `assets/`, lalu ubah alamat `src` di `index.html`.
+  Untuk foto galeri, samakan juga alamat pada `data-image` agar gambar yang
+  diperbesar tetap benar. Sesuaikan teks `alt` untuk menjelaskan foto.
+- **Segel amplop:** ganti `assets/letter-seal.png` dengan gambar pilihanmu.
+- **Warna, tata letak, dan animasi:** edit `styles.css`. Bagian-bagian utamanya
+  ditandai dengan komentar.
+- **Interaksi dan kode kejutan:** edit `script.js`. Kode pembuka disimpan di
+  sisi browser, jadi hanya berfungsi sebagai kejutan—bukan pengaman informasi
+  pribadi.
 
-## Cara mengedit
+## File proyek
 
-### Mengganti tulisan
-
-Buka `index.html`, lalu cari teks yang ingin diganti. Bagian-bagiannya
-ditandai dengan komentar seperti `Halaman pembuka`, `Galeri foto`, dan
-`Surat untuk Acel`. Ubah tulisannya tanpa menghapus tag HTML di sekelilingnya.
-Isi surat ada di bagian `article` dengan `id="letter-card"` dan baru terlihat
-setelah amplop diketuk.
-
-### Mengganti foto
-
-Simpan foto baru ke folder `assets/`, lalu ganti alamat foto di `index.html`.
-Contohnya:
-
-```html
-src="assets/foto-baru.jpeg"
+```text
+.
+├── assets/       # Foto dan gambar yang digunakan website
+├── index.html    # Konten dan susunan halaman
+├── script.js     # Interaksi website
+├── styles.css    # Tampilan dan animasi
+└── README.md     # Panduan proyek
 ```
 
-Di kartu galeri, alamat foto muncul dua kali: pada `data-image` dan pada
-`src` gambar. Ganti keduanya agar foto di kartu dan foto saat diperbesar tetap
-sama. Teks `alt` atau `data-photo-alt` juga sebaiknya disesuaikan agar
-menjelaskan foto.
-Untuk mengganti gambar segel amplop, ganti file `assets/letter-seal.png`.
-
-### Mengubah tampilan
-
-Buka `styles.css`. Cari komentar bagian yang ingin diubah, misalnya
-`Warna dasar`, `Beranda`, atau `Galeri foto`. Untuk mengubah posisi potong
-foto galeri, cari aturan `.gallery-one .gallery-photo` dan seterusnya.
-Angka kedua pada `object-position` mengatur posisi atas-bawah foto:
-angka lebih kecil menggeser fokus ke atas.
-Tampilan 3D amplop dan ketebalan kartu surat diatur pada bagian `Kartu surat`.
-Gerakan kartu saat digulir diatur melalui fungsi `setupScrollReveals` di
-`script.js`; gerakan mengambang ilustrasi dan kilau diatur pada bagian animasi
-di akhir `styles.css`.
-
-### Mengubah kode pembuka
-
-Buka `script.js`, lalu ganti nilai `SECRET_CODE` di bagian paling atas.
-Kode ini hanya untuk kejutan: karena disimpan di JavaScript, kode tersebut
-bukan pengaman untuk informasi pribadi.
-
-## Catatan
-
-Font website diambil dari Google Fonts. Jika internet tidak tersedia, browser
-akan memakai font pengganti yang sudah disiapkan.
+Font dari Google Fonts memerlukan koneksi internet. Jika tidak tersedia,
+browser akan menggunakan font pengganti.
