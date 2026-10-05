@@ -621,7 +621,8 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .letter-card p { margin: 0 0 1rem; color: #ebd0d0; font-size: .78rem; line-height: 1.95; }
 .letter-card .letter-blessing { margin-top: 1.25rem; }
 .letter-blessing strong { color: #f1ca79; font-family: var(--serif); font-size: 1rem; font-weight: 600; }
-.letter-signoff { display: flex; align-items: center; justify-content: flex-end; gap: .7rem; margin-top: 1.7rem; padding-top: 1rem; border-top: 1px solid rgba(255, 224, 218, .14); color: #f3cd8d; font-family: var(--serif); font-size: 1rem; font-style: italic; }
+.letter-signoff { display: flex; flex-direction: column; align-items: flex-end; gap: .2rem; margin-top: 1.7rem; padding-top: 1rem; border-top: 1px solid rgba(255, 224, 218, .14); color: #f3cd8d; font-family: var(--serif); font-size: 1rem; font-style: italic; }
+.signature-name { color: #f0c67f; font-size: 1.08rem; }
 .signature-heart { color: var(--pink); font-family: var(--sans); font-size: 1.3rem; font-style: normal; }
 .letter-decoration { position: absolute; z-index: -1; color: rgba(241, 202, 121, .6); text-shadow: 0 0 1.7rem rgba(241, 202, 121, .4); }
 .letter-deco-one { top: 22%; left: -1%; font-size: 1.4rem; }
