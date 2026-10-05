@@ -1,11 +1,17 @@
 # Website Ulang Tahun Acel
 
+[![Live Demo](https://img.shields.shields.io/badge/Live_Demo-Buka_Website-brightgreen?style=for-the-badge)](https://raufilhamandika.github.io/acel-space/)
+
 Website kecil ini dibuat sebagai hadiah ulang tahun untuk Acel. Isinya ada
 halaman kode rahasia, ucapan pembuka, cerita kenangan, galeri foto, surat,
 kartu wishes, dan penutup dengan lilin ulang tahun.
 
+🌐 **Live Demo:** [raufilhamandika.github.io/acel-space](https://raufilhamandika.github.io/acel-space/)
+
 Website dibuat dengan HTML, CSS, dan JavaScript biasa. Tidak perlu memasang
 aplikasi atau paket tambahan untuk mengeditnya.
+
+---
 
 ## Cara membuka website
 
