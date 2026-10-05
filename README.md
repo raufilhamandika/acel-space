@@ -4,9 +4,6 @@ Website kecil yang dibuat sebagai hadiah ulang tahun untuk Acel—berisi
 kenangan, foto-foto pilihan, wishes, dan surat yang bisa dibuka dari amplop
 interaktif.
 
-<<<<<<< HEAD
-**Lihat website:** <https://raufilhamandika.github.io/acel-space/>
-
 ## Yang ada di dalamnya
 =======
 🌐 **Live Demo:** [raufilhamandika.github.io/acel-space](https://raufilhamandika.github.io/acel-space/)
