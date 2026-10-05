@@ -13,6 +13,14 @@ aplikasi atau paket tambahan untuk mengeditnya.
 
 ---
 
+## 💬 Apresiasi & Kontak
+Suka sama hasilnya atau mau dibuatkan website kustom/desain seperti ini juga? 
+
+- 📸 Follow Instagram: [@rauffffuf](https://www.instagram.com/rauffffuf/)
+- 📩 Diskusi / Pesan Jasa: DM via Instagram atau buka issue di repositori ini.
+
+---
+
 ## Cara membuka website
 
 Cara paling sederhana: buka file `index.html` di browser.
