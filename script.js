@@ -17,7 +17,6 @@ const dialogClose = document.querySelector("#dialog-close");
 const chapterLinks = [...document.querySelectorAll(".chapter-link")];
 const letterEnvelopeButton = document.querySelector("#letter-envelope-button");
 const letterCard = document.querySelector("#letter-card");
-const musicWidget = document.querySelector("#music-widget");
 const backgroundMusic = document.querySelector("#background-music");
 const musicToggle = document.querySelector("#music-toggle");
 const musicStatus = document.querySelector("#music-status");
@@ -78,7 +77,6 @@ codeForm.addEventListener("submit", (event) => {
   codeError.textContent = "";
   gate.hidden = true;
   siteContent.hidden = false;
-  musicWidget.hidden = false;
   setupScrollReveals();
   document.querySelector("#home").setAttribute("tabindex", "-1");
   document.querySelector("#home").focus({ preventScroll: true });
