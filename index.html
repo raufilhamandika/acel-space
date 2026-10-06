@@ -75,14 +75,19 @@
           class="music-toggle"
           id="music-toggle"
           type="button"
-          aria-label="Putar One Only oleh Pamungkas"
+          aria-label="Putar musik"
           aria-pressed="false"
-          title="Putar One Only oleh Pamungkas"
         >
           <span class="vinyl-record" aria-hidden="true">
-            <span class="vinyl-label"></span>
+            <span class="vinyl-label">
+              <span class="music-play-icon">▶</span>
+              <span class="music-pause-icon" aria-hidden="true">Ⅱ</span>
+            </span>
           </span>
-          <span class="music-caption" aria-hidden="true">ONE ONLY</span>
+          <svg class="music-progress" viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="music-progress-track" cx="50" cy="50" r="46" />
+            <circle class="music-progress-value" id="music-progress-value" cx="50" cy="50" r="46" />
+          </svg>
         </button>
         <audio id="background-music" src="Pamungkas%20-%20One%20Only.mp3" preload="none" loop></audio>
         <p class="sr-only" id="music-status" aria-live="polite"></p>
