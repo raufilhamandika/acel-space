@@ -315,45 +315,49 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 }
 .vinyl-tonearm {
   position: absolute;
-  z-index: 2;
-  top: 3%;
-  right: 10%;
-  width: .72rem;
-  height: 2rem;
+  z-index: 3;
+  top: 8%;
+  right: 16%;
+  width: .8rem;
+  height: 1.9rem;
   transform: rotate(var(--tonearm-angle, -24deg));
-  transform-origin: 50% .23rem;
+  transform-origin: 50% .28rem;
   transition: transform 1s ease-in-out;
 }
 .tonearm-pivot {
   position: absolute;
   top: 0;
   left: 50%;
-  width: .46rem;
+  width: .58rem;
   aspect-ratio: 1;
-  border: 1px solid #f5d9df;
+  border: 1px solid #fff1f4;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff0f3, #b8798d 58%, #48273a);
-  box-shadow: 0 0 .3rem rgba(255, 209, 220, .28);
+  background: radial-gradient(circle at 35% 30%, #fffafd, #e6aabd 48%, #8b4964 72%, #321b2b);
+  box-shadow: 0 0 0 1px rgba(34, 14, 26, .7), 0 0 .45rem rgba(255, 209, 220, .72);
   transform: translateX(-50%);
 }
 .tonearm-needle {
   position: absolute;
-  top: .32rem;
+  top: .42rem;
   left: 50%;
-  width: 2px;
-  height: 1.6rem;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #ffeaf0, #bc8d9a 60%, #523446);
+  width: .16rem;
+  height: 1.42rem;
+  border: 1px solid rgba(255, 246, 248, .9);
+  border-radius: .2rem;
+  background: linear-gradient(90deg, #a96d82 0%, #fff8fa 42%, #e6afbf 72%, #6d4054 100%);
+  box-shadow: 0 0 0 1px rgba(31, 13, 24, .65), 0 0 .35rem rgba(255, 225, 234, .58);
   transform: translateX(-50%);
 }
 .tonearm-needle::after {
   position: absolute;
-  bottom: -.05rem;
+  bottom: -.12rem;
   left: 50%;
-  width: .35rem;
-  height: .24rem;
-  border-radius: 1px 1px 3px 3px;
-  background: #ffd4df;
+  width: .48rem;
+  height: .32rem;
+  border: 1px solid #fff2f5;
+  border-radius: 2px 2px 4px 4px;
+  background: linear-gradient(180deg, #ffeaf0, #d78da7 65%, #78415b);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .55);
   content: "";
   transform: translateX(-50%) rotate(-18deg);
 }
