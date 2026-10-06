@@ -17,6 +17,13 @@ const dialogClose = document.querySelector("#dialog-close");
 const chapterLinks = [...document.querySelectorAll(".chapter-link")];
 const letterEnvelopeButton = document.querySelector("#letter-envelope-button");
 const letterCard = document.querySelector("#letter-card");
+const musicWidget = document.querySelector("#music-widget");
+const backgroundMusic = document.querySelector("#background-music");
+const musicToggle = document.querySelector("#music-toggle");
+const musicStatus = document.querySelector("#music-status");
+const letterAudioStatus = document.querySelector("#letter-audio-status");
+let letterRevealTimeoutId;
+let paperAudioContext;
 
 // Munculkan bagian halaman dengan lembut saat pengunjung menggulir.
 function setupScrollReveals() {
@@ -71,6 +78,7 @@ codeForm.addEventListener("submit", (event) => {
   codeError.textContent = "";
   gate.hidden = true;
   siteContent.hidden = false;
+  musicWidget.hidden = false;
   setupScrollReveals();
   document.querySelector("#home").setAttribute("tabindex", "-1");
   document.querySelector("#home").focus({ preventScroll: true });
@@ -80,6 +88,42 @@ codeForm.addEventListener("submit", (event) => {
 // Hapus pesan salah saat pengunjung mulai mengetik lagi.
 codeInput.addEventListener("input", () => {
   if (codeError.textContent) codeError.textContent = "";
+});
+
+// Mulai musik hanya setelah pengunjung menekan tombol, sesuai aturan autoplay browser.
+musicToggle.addEventListener("click", async () => {
+  if (backgroundMusic.paused) {
+    try {
+      await backgroundMusic.play();
+      musicToggle.setAttribute("aria-pressed", "true");
+      musicToggle.setAttribute("aria-label", "Jeda One Only oleh Pamungkas");
+      musicToggle.title = "Jeda One Only oleh Pamungkas";
+      musicStatus.textContent = "Memutar One Only oleh Pamungkas.";
+    } catch {
+      musicStatus.textContent =
+        "Musik tidak dapat diputar. Pastikan file Pamungkas - One Only.mp3 tersedia.";
+    }
+    return;
+  }
+
+  backgroundMusic.pause();
+  musicToggle.setAttribute("aria-pressed", "false");
+  musicToggle.setAttribute("aria-label", "Putar One Only oleh Pamungkas");
+  musicToggle.title = "Putar One Only oleh Pamungkas";
+  musicStatus.textContent = "Musik dijeda.";
+});
+
+backgroundMusic.addEventListener("ended", () => {
+  musicToggle.setAttribute("aria-pressed", "false");
+  musicToggle.setAttribute("aria-label", "Putar One Only oleh Pamungkas");
+  musicToggle.title = "Putar One Only oleh Pamungkas";
+  musicStatus.textContent = "Musik selesai.";
+});
+
+backgroundMusic.addEventListener("error", () => {
+  musicToggle.setAttribute("aria-pressed", "false");
+  musicStatus.textContent =
+    "Musik tidak dapat dimuat. Pastikan file Pamungkas - One Only.mp3 tersedia.";
 });
 
 // Isi dan buka jendela foto memakai data dari kartu galeri di HTML.
@@ -100,15 +144,17 @@ photoDialog.addEventListener("click", (event) => {
   if (event.target === photoDialog) photoDialog.close();
 });
 
-// Tandai wish yang disukai dan ubah keterangan pada kartu.
-document.querySelectorAll(".wish-card").forEach((card) => {
-  card.setAttribute("aria-pressed", "false");
+// Balik kartu wishes dan perbarui sisi yang dibaca teknologi bantu.
+document.querySelectorAll(".wish-card").forEach((card, index) => {
   card.addEventListener("click", () => {
-    const selected = card.classList.toggle("is-kept");
-    card.setAttribute("aria-pressed", String(selected));
-    card.querySelector(".wish-hint").innerHTML = selected
-      ? 'SAVED FOR A RAINY DAY <span aria-hidden="true">♡</span>'
-      : 'A WISH FOR YOU <span aria-hidden="true">↗</span>';
+    const isFlipped = card.classList.toggle("is-flipped");
+    card.setAttribute("aria-expanded", String(isFlipped));
+    card.setAttribute(
+      "aria-label",
+      `${isFlipped ? "Tutup" : "Buka"} harapan ${index + 1}`,
+    );
+    card.querySelector(".wish-card-front").setAttribute("aria-hidden", String(isFlipped));
+    card.querySelector(".wish-card-back").setAttribute("aria-hidden", String(!isFlipped));
   });
 });
 
@@ -121,18 +167,91 @@ wishButton.addEventListener("click", () => {
     : "The candles are glowing again. Make another wish.";
 });
 
-// Open or close the letter from its sealed-envelope button.
+// Mainkan gesekan kertas sintetis tanpa mengambil file audio dari luar.
+async function playPaperRustle() {
+  try {
+    const AudioContextConstructor = window.AudioContext;
+    if (!AudioContextConstructor) {
+      throw new Error("Web Audio tidak tersedia di browser ini.");
+    }
+
+    paperAudioContext ??= new AudioContextConstructor();
+    await paperAudioContext.resume();
+
+    const duration = 0.38;
+    const buffer = paperAudioContext.createBuffer(
+      1,
+      Math.floor(paperAudioContext.sampleRate * duration),
+      paperAudioContext.sampleRate,
+    );
+    const samples = buffer.getChannelData(0);
+    for (let index = 0; index < samples.length; index += 1) {
+      samples[index] = (Math.random() * 2 - 1) * (1 - index / samples.length);
+    }
+
+    const source = paperAudioContext.createBufferSource();
+    const filter = paperAudioContext.createBiquadFilter();
+    const volume = paperAudioContext.createGain();
+    source.buffer = buffer;
+    filter.type = "bandpass";
+    filter.frequency.value = 1250;
+    filter.Q.value = 0.7;
+    volume.gain.setValueAtTime(0.0001, paperAudioContext.currentTime);
+    volume.gain.exponentialRampToValueAtTime(0.06, paperAudioContext.currentTime + 0.035);
+    volume.gain.exponentialRampToValueAtTime(0.0001, paperAudioContext.currentTime + duration);
+    source.connect(filter);
+    filter.connect(volume);
+    volume.connect(paperAudioContext.destination);
+    source.start();
+    source.stop(paperAudioContext.currentTime + duration);
+    letterAudioStatus.textContent = "Surat dibuka dengan suara gesekan kertas.";
+  } catch (error) {
+    letterAudioStatus.textContent = error.message;
+  }
+}
+
+function burstConfetti() {
+  const opening = letterEnvelopeButton.closest(".letter-opening");
+  const colors = ["#ffd1dc", "#f6a9c3", "#ffe0e8", "#f7b8c9", "#fff0f3"];
+
+  for (let index = 0; index < 30; index += 1) {
+    const piece = document.createElement("span");
+    piece.className = "letter-confetti";
+    piece.setAttribute("aria-hidden", "true");
+    piece.style.setProperty("--confetti-x", `${(Math.random() - 0.5) * 250}px`);
+    piece.style.setProperty("--confetti-y", `${-35 - Math.random() * 150}px`);
+    piece.style.setProperty("--confetti-rotation", `${Math.random() * 540 - 270}deg`);
+    piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+    opening.append(piece);
+    piece.addEventListener("animationend", () => piece.remove(), { once: true });
+  }
+}
+
+// Buka atau tutup amplop, lalu munculkan surat setelah animasi kertas selesai.
 letterEnvelopeButton.addEventListener("click", () => {
   const isOpening = letterEnvelopeButton.getAttribute("aria-expanded") !== "true";
+  const letterSection = letterEnvelopeButton.closest(".letter-section");
 
+  window.clearTimeout(letterRevealTimeoutId);
   letterEnvelopeButton.setAttribute("aria-expanded", String(isOpening));
   letterEnvelopeButton.setAttribute(
     "aria-label",
     isOpening ? "Tutup surat untuk Acel" : "Buka surat untuk Acel",
   );
   letterEnvelopeButton.classList.toggle("is-open", isOpening);
-  letterCard.hidden = !isOpening;
-  letterCard.classList.toggle("is-revealed", isOpening);
+  letterSection.classList.toggle("is-open", isOpening);
+  letterCard.hidden = true;
+  letterCard.classList.remove("is-revealed");
+
+  if (isOpening) {
+    burstConfetti();
+    void playPaperRustle();
+    letterRevealTimeoutId = window.setTimeout(() => {
+      if (letterEnvelopeButton.getAttribute("aria-expanded") !== "true") return;
+      letterCard.hidden = false;
+      letterCard.classList.add("is-revealed");
+    }, 1450);
+  }
 
   const actionLabel = letterEnvelopeButton.querySelector(".envelope-action");
   actionLabel.innerHTML = isOpening
