@@ -63,7 +63,9 @@ Kemudian kunjungi <http://localhost:8000>.
 - **Musik latar:** letakkan file MP3 berlisensi `Pamungkas - One Only.mp3` di
   folder utama proyek. Musik mulai diputar setelah tombol piringan hitam disentuh.
 - **Warna, tata letak, dan animasi:** edit `styles.css`. Bagian-bagian utamanya
-  ditandai dengan komentar.
+  ditandai dengan komentar. Setelah mengubah CSS atau JavaScript, naikkan nilai
+  `v` pada alamat stylesheet dan script di `index.html` agar browser memuat
+  versi baru setelah deploy GitHub Pages.
 - **Interaksi dan kode kejutan:** edit `script.js`. Kode pembuka disimpan di
   sisi browser, jadi hanya berfungsi sebagai kejutan—bukan pengaman informasi
   pribadi.
