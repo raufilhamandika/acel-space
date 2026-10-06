@@ -64,6 +64,8 @@ Kemudian kunjungi <http://localhost:8000>.
   Untuk foto galeri, samakan juga alamat pada `data-image` agar gambar yang
   diperbesar tetap benar. Sesuaikan teks `alt` untuk menjelaskan foto.
 - **Segel amplop:** ganti `assets/letter-seal.png` dengan gambar pilihanmu.
+- **Musik latar:** letakkan file MP3 berlisensi `Pamungkas - One Only.mp3` di
+  folder utama proyek. Musik mulai diputar setelah tombol piringan hitam disentuh.
 - **Warna, tata letak, dan animasi:** edit `styles.css`. Bagian-bagian utamanya
   ditandai dengan komentar.
 - **Interaksi dan kode kejutan:** edit `script.js`. Kode pembuka disimpan di
