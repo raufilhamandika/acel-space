@@ -24,7 +24,30 @@ const musicProgress = document.querySelector("#music-progress-value");
 const letterAudioStatus = document.querySelector("#letter-audio-status");
 let letterRevealTimeoutId;
 let paperAudioContext;
+let tonearmCueTimeoutId;
+let tonearmCueing = false;
 const musicProgressCircumference = 2 * Math.PI * 46;
+const tonearmRestAngle = -24;
+const tonearmStartAngle = 0;
+const tonearmEndAngle = 8;
+
+function updateTonearmPivot() {
+  if (
+    tonearmCueing ||
+    backgroundMusic.paused ||
+    !Number.isFinite(backgroundMusic.duration) ||
+    backgroundMusic.duration <= 0
+  ) {
+    return;
+  }
+
+  const progress = Math.min(
+    1,
+    Math.max(0, backgroundMusic.currentTime / backgroundMusic.duration),
+  );
+  const angle = tonearmStartAngle + (tonearmEndAngle - tonearmStartAngle) * progress;
+  musicToggle.style.setProperty("--tonearm-angle", `${angle}deg`);
+}
 
 function updateMusicProgress() {
   if (!Number.isFinite(backgroundMusic.duration) || backgroundMusic.duration <= 0) {
@@ -36,6 +59,7 @@ function updateMusicProgress() {
   musicProgress.style.strokeDashoffset = String(
     musicProgressCircumference * (1 - progress),
   );
+  updateTonearmPivot();
 }
 
 // Munculkan bagian halaman dengan lembut saat pengunjung menggulir.
@@ -107,9 +131,6 @@ musicToggle.addEventListener("click", async () => {
   if (backgroundMusic.paused) {
     try {
       await backgroundMusic.play();
-      musicToggle.setAttribute("aria-pressed", "true");
-      musicToggle.setAttribute("aria-label", "Jeda musik");
-      musicStatus.textContent = "Musik sedang diputar.";
     } catch {
       musicStatus.textContent =
         "Musik tidak dapat diputar. Pastikan file audio tersedia.";
@@ -118,12 +139,37 @@ musicToggle.addEventListener("click", async () => {
   }
 
   backgroundMusic.pause();
-  musicToggle.setAttribute("aria-pressed", "false");
-  musicToggle.setAttribute("aria-label", "Putar musik");
   musicStatus.textContent = "Musik dijeda.";
 });
 
+backgroundMusic.addEventListener("play", () => {
+  window.clearTimeout(tonearmCueTimeoutId);
+  tonearmCueing = true;
+  musicToggle.classList.add("is-playing");
+  musicToggle.style.setProperty("--tonearm-angle", `${tonearmStartAngle}deg`);
+  musicToggle.setAttribute("aria-pressed", "true");
+  musicToggle.setAttribute("aria-label", "Jeda musik");
+  musicStatus.textContent = "Musik sedang diputar.";
+  tonearmCueTimeoutId = window.setTimeout(() => {
+    tonearmCueing = false;
+    updateTonearmPivot();
+  }, 1000);
+});
+
+backgroundMusic.addEventListener("pause", () => {
+  window.clearTimeout(tonearmCueTimeoutId);
+  tonearmCueing = false;
+  musicToggle.classList.remove("is-playing");
+  musicToggle.style.setProperty("--tonearm-angle", `${tonearmRestAngle}deg`);
+  musicToggle.setAttribute("aria-pressed", "false");
+  musicToggle.setAttribute("aria-label", "Putar musik");
+});
+
 backgroundMusic.addEventListener("ended", () => {
+  window.clearTimeout(tonearmCueTimeoutId);
+  tonearmCueing = false;
+  musicToggle.classList.remove("is-playing");
+  musicToggle.style.setProperty("--tonearm-angle", `${tonearmRestAngle}deg`);
   musicToggle.setAttribute("aria-pressed", "false");
   musicToggle.setAttribute("aria-label", "Putar musik");
   musicStatus.textContent = "Musik selesai.";
@@ -135,7 +181,12 @@ backgroundMusic.addEventListener("durationchange", updateMusicProgress);
 backgroundMusic.addEventListener("seeked", updateMusicProgress);
 
 backgroundMusic.addEventListener("error", () => {
+  window.clearTimeout(tonearmCueTimeoutId);
+  tonearmCueing = false;
+  musicToggle.classList.remove("is-playing");
+  musicToggle.style.setProperty("--tonearm-angle", `${tonearmRestAngle}deg`);
   musicToggle.setAttribute("aria-pressed", "false");
+  musicToggle.setAttribute("aria-label", "Putar musik");
   musicStatus.textContent =
     "Musik tidak dapat dimuat. Pastikan file audio tersedia.";
 });
