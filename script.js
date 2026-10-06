@@ -20,9 +20,23 @@ const letterCard = document.querySelector("#letter-card");
 const backgroundMusic = document.querySelector("#background-music");
 const musicToggle = document.querySelector("#music-toggle");
 const musicStatus = document.querySelector("#music-status");
+const musicProgress = document.querySelector("#music-progress-value");
 const letterAudioStatus = document.querySelector("#letter-audio-status");
 let letterRevealTimeoutId;
 let paperAudioContext;
+const musicProgressCircumference = 2 * Math.PI * 46;
+
+function updateMusicProgress() {
+  if (!Number.isFinite(backgroundMusic.duration) || backgroundMusic.duration <= 0) {
+    musicProgress.style.strokeDashoffset = String(musicProgressCircumference);
+    return;
+  }
+
+  const progress = backgroundMusic.currentTime / backgroundMusic.duration;
+  musicProgress.style.strokeDashoffset = String(
+    musicProgressCircumference * (1 - progress),
+  );
+}
 
 // Munculkan bagian halaman dengan lembut saat pengunjung menggulir.
 function setupScrollReveals() {
@@ -94,34 +108,36 @@ musicToggle.addEventListener("click", async () => {
     try {
       await backgroundMusic.play();
       musicToggle.setAttribute("aria-pressed", "true");
-      musicToggle.setAttribute("aria-label", "Jeda One Only oleh Pamungkas");
-      musicToggle.title = "Jeda One Only oleh Pamungkas";
-      musicStatus.textContent = "Memutar One Only oleh Pamungkas.";
+      musicToggle.setAttribute("aria-label", "Jeda musik");
+      musicStatus.textContent = "Musik sedang diputar.";
     } catch {
       musicStatus.textContent =
-        "Musik tidak dapat diputar. Pastikan file Pamungkas - One Only.mp3 tersedia.";
+        "Musik tidak dapat diputar. Pastikan file audio tersedia.";
     }
     return;
   }
 
   backgroundMusic.pause();
   musicToggle.setAttribute("aria-pressed", "false");
-  musicToggle.setAttribute("aria-label", "Putar One Only oleh Pamungkas");
-  musicToggle.title = "Putar One Only oleh Pamungkas";
+  musicToggle.setAttribute("aria-label", "Putar musik");
   musicStatus.textContent = "Musik dijeda.";
 });
 
 backgroundMusic.addEventListener("ended", () => {
   musicToggle.setAttribute("aria-pressed", "false");
-  musicToggle.setAttribute("aria-label", "Putar One Only oleh Pamungkas");
-  musicToggle.title = "Putar One Only oleh Pamungkas";
+  musicToggle.setAttribute("aria-label", "Putar musik");
   musicStatus.textContent = "Musik selesai.";
 });
+
+backgroundMusic.addEventListener("timeupdate", updateMusicProgress);
+backgroundMusic.addEventListener("loadedmetadata", updateMusicProgress);
+backgroundMusic.addEventListener("durationchange", updateMusicProgress);
+backgroundMusic.addEventListener("seeked", updateMusicProgress);
 
 backgroundMusic.addEventListener("error", () => {
   musicToggle.setAttribute("aria-pressed", "false");
   musicStatus.textContent =
-    "Musik tidak dapat dimuat. Pastikan file Pamungkas - One Only.mp3 tersedia.";
+    "Musik tidak dapat dimuat. Pastikan file audio tersedia.";
 });
 
 // Isi dan buka jendela foto memakai data dari kartu galeri di HTML.
