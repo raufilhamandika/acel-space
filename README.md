@@ -24,13 +24,12 @@ Suka sama hasilnya atau mau dibuatkan website kustom/desain seperti ini juga?
 ---
 
 ## Cara membuka website
->>>>>>> a7ef76233db84693bfdc695d727b98e43efb7e20
 
 - Halaman pembuka dengan kode kejutan
 - Ucapan dan cerita singkat tentang kenangan
 - Galeri foto yang bisa dibuka untuk melihat gambar lebih dekat
 - Amplop interaktif dengan segel foto dan surat pribadi
-- Kartu wishes yang bisa dipilih
+- Enam kartu wishes yang bisa dibalik satu per satu
 - Lilin ulang tahun interaktif
 - Animasi lembut dan tampilan yang menyesuaikan layar ponsel
 
@@ -73,11 +72,12 @@ Kemudian kunjungi <http://localhost:8000>.
 
 ```text
 .
-├── assets/       # Foto dan gambar yang digunakan website
-├── index.html    # Konten dan susunan halaman
-├── script.js     # Interaksi website
-├── styles.css    # Tampilan dan animasi
-└── README.md     # Panduan proyek
+├── assets/                      # Foto dan gambar yang digunakan website
+├── Pamungkas - One Only.mp3     # Lagu untuk tombol musik
+├── index.html                   # Konten dan susunan halaman
+├── script.js                    # Interaksi website
+├── styles.css                   # Tampilan dan animasi
+└── README.md                    # Panduan proyek
 ```
 
 Font dari Google Fonts memerlukan koneksi internet. Jika tidak tersedia,
