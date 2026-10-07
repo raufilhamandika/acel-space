@@ -32,6 +32,9 @@ Suka sama hasilnya atau mau dibuatkan website kustom/desain seperti ini juga?
 - Enam kartu wishes yang bisa dibalik satu per satu
 - Lilin ulang tahun interaktif
 - Animasi lembut dan tampilan yang menyesuaikan layar ponsel
+- Intro burst satu bunga dan hujan bunga berbasis Canvas setelah kode benar;
+  memakai empat ilustrasi PNG transparan, kedalaman visual, rotasi 3D semu,
+  partikel berbasis delta time yang dibatasi, dan canvas yang dihapus setelah transisi
 
 ## Dibuat dengan
 
@@ -59,6 +62,9 @@ Kemudian kunjungi <http://localhost:8000>.
 - **Foto:** letakkan foto di `assets/`, lalu ubah alamat `src` di `index.html`.
   Untuk foto galeri, samakan juga alamat pada `data-image` agar gambar yang
   diperbesar tetap benar. Sesuaikan teks `alt` untuk menjelaskan foto.
+- **Ilustrasi hujan bunga:** sprite transparan `flower-rose.png`,
+  `flower-peony.png`, `flower-lily.png`, dan `flower-petal.png` berada di
+  `assets/` dan dimuat langsung oleh `script.js`.
 - **Segel amplop:** ganti `assets/letter-seal.png` dengan gambar pilihanmu.
 - **Musik latar:** letakkan file MP3 berlisensi `Pamungkas - One Only.mp3` di
   folder utama proyek. Musik mulai diputar setelah tombol piringan hitam disentuh.
