@@ -30,7 +30,249 @@ const musicProgressCircumference = 2 * Math.PI * 46;
 const tonearmRestAngle = -24;
 const tonearmStartAngle = 0;
 const tonearmEndAngle = 8;
+let gateTransitioning = false;
 
+async function createFlowerSprites() {
+  const types = ['rose', 'peony', 'lily', 'petal'];
+  const loaded = await Promise.all(types.map((type) => new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      const softSprite = document.createElement('canvas');
+      softSprite.width = image.naturalWidth;
+      softSprite.height = image.naturalHeight;
+      const softContext = softSprite.getContext('2d');
+      if (!softContext) {
+        reject(new Error('Canvas 2D is not available to prepare flower sprites.'));
+        return;
+      }
+      softContext.filter = 'blur(4px)';
+      softContext.drawImage(image, 0, 0);
+      resolve([[type, image], [`${type}-soft`, softSprite]]);
+    };
+    image.onerror = () => reject(new Error(`Could not load the ${type} flower PNG.`));
+    image.src = `assets/flower-${type}.png`;
+  })));
+  return new Map(loaded.flat());
+}
+
+function triggerFloralBloom(mode = 'intro', onTransition) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const overlay = document.createElement('div');
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d', { alpha: true, desynchronized: true });
+  if (!context) return Promise.reject(new Error('Canvas 2D is not available in this browser.'));
+
+  overlay.className = 'floral-bloom';
+  overlay.setAttribute('aria-hidden', 'true');
+  canvas.className = 'floral-bloom__canvas';
+  canvas.setAttribute('aria-hidden', 'true');
+  overlay.append(canvas);
+  document.body.append(overlay);
+
+  let width = 0;
+  let height = 0;
+  let pixelRatio = 1;
+  let frameId = 0;
+  let previousFrame = 0;
+  let elapsed = 0;
+  let spawnRemainder = 0;
+  let phase = mode === 'rain' ? 'rain' : 'hero';
+  let particles = [];
+  let sprites;
+  let resolveAnimation;
+  let rejectAnimation;
+  const maximumParticles = reduceMotion
+    ? 12
+    : Math.min(60, Math.max(36, Math.round(window.innerWidth / 18)));
+  const flightStart = Math.random() < .5
+    ? { x: Math.random() < .5 ? -70 : window.innerWidth + 70, y: Math.random() * window.innerHeight }
+    : { x: Math.random() * window.innerWidth, y: Math.random() < .5 ? -70 : window.innerHeight + 70 };
+  let centerX = 0;
+  let centerY = 0;
+
+  function resizeCanvas() {
+    const oldWidth = width;
+    const oldHeight = height;
+    width = document.documentElement.clientWidth;
+    height = window.innerHeight;
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    canvas.width = Math.round(width * pixelRatio);
+    canvas.height = Math.round(height * pixelRatio);
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    centerX = width / 2;
+    centerY = height / 2;
+    if (oldWidth && oldHeight) {
+      particles.forEach((particle) => { particle.x *= width / oldWidth; particle.y *= height / oldHeight; });
+    }
+  }
+
+  function createParticle(x, y, angle, falling) {
+    const depth = Math.random();
+    const isPetal = Math.random() < .38;
+    const type = isPetal ? 'petal' : ['rose', 'peony', 'lily'][Math.floor(Math.random() * 3)];
+    const size = falling
+      ? depth < .45
+        ? 15 + (depth / .45) * 10
+        : depth > .78
+          ? 60 + ((depth - .78) / .22) * 40
+          : 25 + ((depth - .45) / .33) * 35
+      : 16 + depth * 38;
+    return {
+      x, y,
+      vx: falling ? (Math.random() - .5) * (25 + depth * 45) : Math.cos(angle) * (190 + Math.random() * 390),
+      vy: falling
+        ? (reduceMotion ? 700 : 130 + depth * 175) + Math.random() * (reduceMotion ? 150 : 80 + depth * 110)
+        : Math.sin(angle) * (190 + Math.random() * 390),
+      size,
+      depth,
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - .5) * 2.4,
+      rotationX: (Math.random() - .5) * Math.PI,
+      rotationY: (Math.random() - .5) * Math.PI,
+      rotationXSpeed: (Math.random() - .5) * (1.1 + depth * 2.2),
+      rotationYSpeed: (Math.random() - .5) * (1.1 + depth * 2.2),
+      sway: 14 + Math.random() * 35,
+      swaySpeed: .7 + Math.random() * 1.5,
+      phase: Math.random() * Math.PI * 2,
+      type,
+      life: 0,
+      duration: falling ? 3.2 + Math.random() * 1.8 : 1.8 + Math.random() * .9,
+      alpha: falling ? .3 + depth * .68 : .72 + Math.random() * .25,
+    };
+  }
+
+  function drawParticle(particle, dt, time, fade) {
+    particle.life += dt;
+    particle.rotation += particle.rotationSpeed * dt;
+    particle.rotationX += particle.rotationXSpeed * dt;
+    particle.rotationY += particle.rotationYSpeed * dt;
+    particle.x += particle.vx * dt + Math.sin(time * particle.swaySpeed + particle.phase) * particle.sway * dt;
+    particle.y += particle.vy * dt;
+    const alpha = (fade ? Math.max(0, 1 - particle.life / particle.duration) : particle.alpha) *
+      (.48 + particle.depth * .52);
+    const cosX = Math.cos(particle.rotationX);
+    const cosY = Math.cos(particle.rotationY);
+    const cosZ = Math.cos(particle.rotation);
+    const sinX = Math.sin(particle.rotationX);
+    const sinY = Math.sin(particle.rotationY);
+    const sinZ = Math.sin(particle.rotation);
+    const sprite = sprites.get(particle.depth < .38 ? `${particle.type}-soft` : particle.type);
+    context.save();
+    context.translate(particle.x, particle.y);
+    context.transform(
+      cosZ * cosY,
+      sinZ * cosY,
+      cosZ * sinY * sinX - sinZ * cosX,
+      sinZ * sinY * sinX + cosZ * cosX,
+      0,
+      0,
+    );
+    context.globalAlpha = alpha;
+    context.drawImage(sprite, -particle.size / 2, -particle.size / 2, particle.size, particle.size);
+    context.restore();
+  }
+
+  function finish() {
+    window.cancelAnimationFrame(frameId);
+    window.removeEventListener('resize', resizeCanvas);
+    overlay.remove();
+    resolveAnimation();
+  }
+
+  function scheduleFrame() {
+    frameId = window.requestAnimationFrame((timestamp) => {
+      try {
+        render(timestamp);
+      } catch (error) {
+        window.cancelAnimationFrame(frameId);
+        window.removeEventListener('resize', resizeCanvas);
+        overlay.remove();
+        rejectAnimation(error);
+      }
+    });
+  }
+
+  function render(timestamp) {
+    if (!previousFrame) previousFrame = timestamp;
+    const dt = Math.min((timestamp - previousFrame) / 1000, .05);
+    previousFrame = timestamp;
+    elapsed += dt;
+    context.clearRect(0, 0, width, height);
+
+    if (phase === 'hero') {
+      const progress = Math.min(1, elapsed / (reduceMotion ? .08 : 1));
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const x = flightStart.x + (centerX - flightStart.x) * ease;
+      const y = flightStart.y + (centerY - flightStart.y) * ease;
+      context.save();
+      context.translate(x, y);
+      context.rotate(elapsed * 1.4);
+      const size = 54 + ease * 28;
+      context.drawImage(sprites.get('rose'), -size / 2, -size / 2, size, size);
+      context.restore();
+      if (progress >= 1) {
+        phase = 'burst';
+        elapsed = 0;
+        for (let index = 0; index < maximumParticles; index += 1) {
+          particles.push(createParticle(centerX, centerY, (Math.PI * 2 * index) / maximumParticles, false));
+        }
+      }
+    } else if (phase === 'burst') {
+      particles = particles.filter((particle) => {
+        drawParticle(particle, dt, elapsed, true);
+        return particle.life < particle.duration && particle.x > -particle.size && particle.x < width + particle.size && particle.y > -particle.size && particle.y < height + particle.size;
+      });
+      if (elapsed >= (reduceMotion ? .08 : 1.7)) {
+        phase = 'burst-fade';
+        elapsed = 0;
+      }
+    } else if (phase === 'burst-fade') {
+      particles = particles.filter((particle) => {
+        drawParticle(particle, dt, elapsed, true);
+        return particle.life < particle.duration && particle.x > -particle.size && particle.x < width + particle.size && particle.y > -particle.size && particle.y < height + particle.size;
+      });
+      overlay.style.opacity = String(Math.max(0, 1 - elapsed / (reduceMotion ? .12 : .75)));
+      if (elapsed >= (reduceMotion ? .12 : .75)) { finish(); return; }
+    } else if (phase === 'rain') {
+      if (elapsed < (reduceMotion ? .08 : 1.8)) {
+        spawnRemainder += maximumParticles / 1.8 * dt;
+        while (spawnRemainder >= 1 && particles.length < maximumParticles) {
+          particles.push(createParticle(Math.random() * width, -30 - Math.random() * 80, 0, true));
+          spawnRemainder -= 1;
+        }
+      }
+      particles = particles.filter((particle) => {
+        drawParticle(particle, dt, elapsed, false);
+        return particle.life < particle.duration && particle.y < height + particle.size;
+      });
+      if (elapsed >= (reduceMotion ? .08 : 1.8) && particles.length === 0) {
+        phase = 'rain-fade';
+        elapsed = 0;
+        if (typeof onTransition === 'function') onTransition();
+      }
+    } else if (phase === 'rain-fade') {
+      overlay.style.opacity = String(Math.max(0, 1 - elapsed / (reduceMotion ? .12 : .75)));
+      if (elapsed >= (reduceMotion ? .12 : .75)) { finish(); return; }
+    }
+    scheduleFrame();
+  }
+
+  return new Promise((resolve, reject) => {
+    resolveAnimation = resolve;
+    rejectAnimation = reject;
+    createFlowerSprites().then((loadedSprites) => {
+      sprites = loadedSprites;
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas, { passive: true });
+      scheduleFrame();
+    }).catch((error) => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', resizeCanvas);
+      overlay.remove();
+      rejectAnimation(error);
+    });
+  });
+}
 function updateTonearmPivot() {
   if (
     tonearmCueing ||
@@ -102,6 +344,7 @@ function setupScrollReveals() {
 // Periksa kode; kode yang benar menyembunyikan halaman pembuka.
 codeForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (gateTransitioning) return;
 
   if (codeInput.value.trim() !== SECRET_CODE) {
     codeError.textContent = "Hmm, not quite. Try another little key ♡";
@@ -113,12 +356,30 @@ codeForm.addEventListener("submit", (event) => {
   }
 
   codeError.textContent = "";
-  gate.hidden = true;
-  siteContent.hidden = false;
-  setupScrollReveals();
-  document.querySelector("#home").setAttribute("tabindex", "-1");
-  document.querySelector("#home").focus({ preventScroll: true });
-  history.replaceState(null, "", "#home");
+  gateTransitioning = true;
+  gate.inert = true;
+  triggerFloralBloom("rain", () => {
+    gate.hidden = true;
+    gate.inert = false;
+    siteContent.hidden = false;
+    setupScrollReveals();
+    history.replaceState(null, "", "#home");
+  })
+    .then(() => {
+      const home = document.querySelector("#home");
+      home.setAttribute("tabindex", "-1");
+      home.focus({ preventScroll: true });
+      gateTransitioning = false;
+    })
+    .catch((error) => {
+      gate.hidden = false;
+      gate.classList.remove("is-intro-pending");
+      gate.inert = false;
+      siteContent.hidden = true;
+      gateTransitioning = false;
+      codeError.textContent = "The page could not open. Please try again.";
+      console.error("Floral transition failed:", error);
+    });
 });
 
 // Hapus pesan salah saat pengunjung mulai mengetik lagi.
@@ -349,3 +610,16 @@ const sectionObserver = new IntersectionObserver(
 document
   .querySelectorAll("#home, #memories, #gallery, #letter, #wishes")
   .forEach((section) => sectionObserver.observe(section));
+
+gate.inert = true;
+gate.classList.add("is-intro-pending");
+triggerFloralBloom("intro")
+  .then(() => {
+    gate.classList.remove("is-intro-pending");
+    gate.inert = false;
+  })
+  .catch((error) => {
+    gate.inert = false;
+    gate.classList.remove("is-intro-pending");
+    console.error("Floral intro failed:", error);
+  });
