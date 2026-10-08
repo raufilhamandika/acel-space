@@ -214,6 +214,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .code-form {
   display: grid;
   grid-template-columns: 1fr auto;
+  align-items: stretch;
   gap: .5rem;
   padding: .35rem;
   border: 1px solid rgba(255, 223, 214, .18);
@@ -225,19 +226,34 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   border-color: rgba(239, 115, 168, .64);
   box-shadow: 0 0 1.5rem rgba(239, 115, 168, .11);
 }
-.code-form input {
-  width: 100%;
+.code-fields {
+  display: flex;
   min-width: 0;
-  padding: .75rem;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(.2rem, 1.2vw, .55rem);
+  margin: 0;
+  padding: 0 .3rem;
   border: 0;
+}
+.code-fields input {
+  width: 2.7rem;
+  min-width: 0;
+  padding: .65rem .2rem;
+  border: 0;
+  border-radius: .35rem;
   background: transparent;
   color: var(--ink);
-  font-size: .9rem;
-  letter-spacing: .35em;
+  font-size: 1rem;
+  letter-spacing: .12em;
   text-align: center;
 }
-.code-form input::placeholder { color: #886c78; }
-.code-form input:focus-visible { outline: none; }
+.code-fields input::placeholder { color: #886c78; }
+.code-fields input:focus-visible {
+  outline: 1px solid rgba(239, 115, 168, .55);
+  outline-offset: 1px;
+}
+.code-separator { color: #bd879b; font-size: .9rem; }
 .code-form button {
   display: flex;
   align-items: center;
@@ -1164,7 +1180,8 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 @media (max-width: 540px) {
   .topbar { min-height: 3.5rem; padding-right: 1rem; padding-left: 1rem; }
   .topbar-date { gap: .35rem; font-size: .49rem; letter-spacing: .1em; }
-  .code-form input { font-size: 16px; }
+  .code-fields input { width: 2.35rem; font-size: 16px; }
+  .code-fields { gap: .12rem; padding-right: 0; padding-left: 0; }
   .music-toggle { right: max(.8rem, env(safe-area-inset-right)); bottom: max(.8rem, env(safe-area-inset-bottom)); width: 4.2rem; }
   .sound-label { display: none; }
   .sound-button { width: 2rem; height: 2rem; justify-content: center; padding: 0; }
