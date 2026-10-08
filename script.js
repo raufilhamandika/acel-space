@@ -31,6 +31,10 @@ const tonearmRestAngle = -24;
 const tonearmStartAngle = 0;
 const tonearmEndAngle = 8;
 let gateTransitioning = false;
+let gateHideTimeoutId;
+let dashboardClearTimeoutId;
+let dashboardRevealTimeoutId;
+let heroRevealCleanupTimeoutId;
 
 async function createFlowerSprites() {
   const types = ['rose', 'peony', 'lily', 'petal'];
@@ -79,6 +83,7 @@ function triggerFloralBloom(mode = 'intro', onTransition) {
   let phase = mode === 'rain' ? 'rain' : 'hero';
   let particles = [];
   let sprites;
+  let transitionStarted = false;
   let resolveAnimation;
   let rejectAnimation;
   const maximumParticles = reduceMotion
@@ -234,8 +239,13 @@ function triggerFloralBloom(mode = 'intro', onTransition) {
       overlay.style.opacity = String(Math.max(0, 1 - elapsed / (reduceMotion ? .12 : .75)));
       if (elapsed >= (reduceMotion ? .12 : .75)) { finish(); return; }
     } else if (phase === 'rain') {
-      if (elapsed < (reduceMotion ? .08 : 1.8)) {
-        spawnRemainder += maximumParticles / 1.8 * dt;
+      if (!transitionStarted) {
+        transitionStarted = true;
+        if (typeof onTransition === 'function') onTransition();
+      }
+      const rainDuration = reduceMotion ? .08 : 2;
+      if (elapsed < rainDuration) {
+        spawnRemainder += maximumParticles / rainDuration * dt;
         while (spawnRemainder >= 1 && particles.length < maximumParticles) {
           particles.push(createParticle(Math.random() * width, -30 - Math.random() * 80, 0, true));
           spawnRemainder -= 1;
@@ -245,12 +255,15 @@ function triggerFloralBloom(mode = 'intro', onTransition) {
         drawParticle(particle, dt, elapsed, false);
         return particle.life < particle.duration && particle.y < height + particle.size;
       });
-      if (elapsed >= (reduceMotion ? .08 : 1.8) && particles.length === 0) {
+      if (elapsed >= rainDuration) {
         phase = 'rain-fade';
         elapsed = 0;
-        if (typeof onTransition === 'function') onTransition();
       }
     } else if (phase === 'rain-fade') {
+      particles = particles.filter((particle) => {
+        drawParticle(particle, dt, elapsed, true);
+        return particle.life < particle.duration && particle.y < height + particle.size;
+      });
       overlay.style.opacity = String(Math.max(0, 1 - elapsed / (reduceMotion ? .12 : .75)));
       if (elapsed >= (reduceMotion ? .12 : .75)) { finish(); return; }
     }
@@ -307,7 +320,7 @@ function updateMusicProgress() {
 // Munculkan bagian halaman dengan lembut saat pengunjung menggulir.
 function setupScrollReveals() {
   const revealItems = siteContent.querySelectorAll(
-    ".hero-copy, .hero-art, .section-heading, .memory-card, .personal-note, " +
+    ".section-heading, .memory-card, .personal-note, " +
       ".gallery-card, .gallery-footnote, .letter-opening, .wish-card, " +
       ".wish-afterthought, .finale > .eyebrow, .finale > h2, .finale-copy, " +
       ".candles, .wish-button, .back-to-top",
@@ -341,6 +354,32 @@ function setupScrollReveals() {
   });
 }
 
+function beginDashboardReveal() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  siteContent.hidden = false;
+  siteContent.classList.add("is-transitioning", "is-reveal-pending");
+  setupScrollReveals();
+  history.replaceState(null, "", "#home");
+
+  gateHideTimeoutId = window.setTimeout(() => {
+    gate.hidden = true;
+    gate.classList.remove("is-leaving");
+    gate.inert = false;
+  }, reduceMotion ? 0 : 650);
+
+  dashboardClearTimeoutId = window.setTimeout(() => {
+    siteContent.classList.remove("is-transitioning");
+  }, reduceMotion ? 0 : 180);
+
+  dashboardRevealTimeoutId = window.setTimeout(() => {
+    siteContent.classList.remove("is-reveal-pending");
+    siteContent.classList.add("is-revealing-hero");
+    heroRevealCleanupTimeoutId = window.setTimeout(() => {
+      siteContent.classList.remove("is-revealing-hero");
+    }, reduceMotion ? 0 : 2_000);
+  }, reduceMotion ? 0 : 750);
+}
+
 // Periksa kode; kode yang benar menyembunyikan halaman pembuka.
 codeForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -358,13 +397,8 @@ codeForm.addEventListener("submit", (event) => {
   codeError.textContent = "";
   gateTransitioning = true;
   gate.inert = true;
-  triggerFloralBloom("rain", () => {
-    gate.hidden = true;
-    gate.inert = false;
-    siteContent.hidden = false;
-    setupScrollReveals();
-    history.replaceState(null, "", "#home");
-  })
+  gate.classList.add("is-leaving");
+  triggerFloralBloom("rain", beginDashboardReveal)
     .then(() => {
       const home = document.querySelector("#home");
       home.setAttribute("tabindex", "-1");
@@ -372,10 +406,15 @@ codeForm.addEventListener("submit", (event) => {
       gateTransitioning = false;
     })
     .catch((error) => {
+      window.clearTimeout(gateHideTimeoutId);
+      window.clearTimeout(dashboardClearTimeoutId);
+      window.clearTimeout(dashboardRevealTimeoutId);
+      window.clearTimeout(heroRevealCleanupTimeoutId);
       gate.hidden = false;
-      gate.classList.remove("is-intro-pending");
+      gate.classList.remove("is-intro-pending", "is-leaving");
       gate.inert = false;
       siteContent.hidden = true;
+      siteContent.classList.remove("is-transitioning", "is-reveal-pending", "is-revealing-hero");
       gateTransitioning = false;
       codeError.textContent = "The page could not open. Please try again.";
       console.error("Floral transition failed:", error);
