@@ -4,7 +4,7 @@ const SECRET_CODE = "140826";
 const gate = document.querySelector("#gate");
 const siteContent = document.querySelector("#site-content");
 const codeForm = document.querySelector("#code-form");
-const codeInput = document.querySelector("#secret-code");
+const codeInputs = [...document.querySelectorAll(".code-fields input")];
 const codeError = document.querySelector("#code-error");
 const wishButton = document.querySelector("#wish-button");
 const wishResult = document.querySelector("#wish-result");
@@ -380,17 +380,63 @@ function beginDashboardReveal() {
   }, reduceMotion ? 0 : 750);
 }
 
+function distributeCodeDigits(startIndex, digits) {
+  let remainingDigits = digits;
+  codeInputs.slice(startIndex).forEach((input) => {
+    input.value = remainingDigits.slice(0, 2);
+    remainingDigits = remainingDigits.slice(2);
+  });
+  const nextEmptyInput = codeInputs.find((input) => input.value.length < 2);
+  (nextEmptyInput ?? codeInputs[codeInputs.length - 1]).focus();
+}
+
+codeInputs.forEach((input, index) => {
+  input.addEventListener("input", () => {
+    input.value = input.value.replace(/\D/g, "").slice(0, 2);
+    if (input.value.length === 2 && index < codeInputs.length - 1) {
+      codeInputs[index + 1].focus();
+    }
+    if (codeError.textContent) codeError.textContent = "";
+  });
+
+  input.addEventListener("paste", (event) => {
+    const digits = event.clipboardData?.getData("text").replace(/\D/g, "");
+    if (!digits) return;
+
+    event.preventDefault();
+    distributeCodeDigits(index, digits);
+    if (codeError.textContent) codeError.textContent = "";
+  });
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Backspace" && !input.value && index > 0) {
+      codeInputs[index - 1].focus();
+    } else if (event.key === "ArrowLeft" && input.selectionStart === 0 && index > 0) {
+      codeInputs[index - 1].focus();
+    } else if (
+      event.key === "ArrowRight" &&
+      input.selectionStart === input.value.length &&
+      index < codeInputs.length - 1
+    ) {
+      codeInputs[index + 1].focus();
+    }
+  });
+});
+
 // Periksa kode; kode yang benar menyembunyikan halaman pembuka.
 codeForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (gateTransitioning) return;
 
-  if (codeInput.value.trim() !== SECRET_CODE) {
+  const enteredCode = codeInputs.map((input) => input.value).join("");
+  if (enteredCode !== SECRET_CODE) {
     codeError.textContent = "Hmm, not quite. Try another little key ♡";
     codeForm.classList.remove("is-shaking");
     void codeForm.offsetWidth;
     codeForm.classList.add("is-shaking");
-    codeInput.select();
+    const inputToFocus = codeInputs.find((input) => input.value.length < 2) ?? codeInputs[0];
+    inputToFocus.focus();
+    inputToFocus.select();
     return;
   }
 
@@ -419,11 +465,6 @@ codeForm.addEventListener("submit", (event) => {
       codeError.textContent = "The page could not open. Please try again.";
       console.error("Floral transition failed:", error);
     });
-});
-
-// Hapus pesan salah saat pengunjung mulai mengetik lagi.
-codeInput.addEventListener("input", () => {
-  if (codeError.textContent) codeError.textContent = "";
 });
 
 // Mulai musik hanya setelah pengunjung menekan tombol, sesuai aturan autoplay browser.
