@@ -26,6 +26,7 @@ Suka sama hasilnya atau mau dibuatkan website kustom/desain seperti ini juga?
 ## Cara membuka website
 
 - Halaman pembuka dengan kode kejutan
+- Kode pembuka enam digit dimasukkan dalam tiga kolom `00/00/00`
 - Ucapan dan cerita singkat tentang kenangan
 - Galeri foto yang bisa dibuka untuk melihat gambar lebih dekat
 - Amplop interaktif dengan segel foto dan surat pribadi
