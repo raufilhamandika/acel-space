@@ -84,6 +84,21 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .floral-bloom__canvas { display: block; width: 100%; height: 100%; }
 .gate { transition: opacity 650ms ease; }
 .gate.is-intro-pending { opacity: 0; pointer-events: none; }
+.gate.is-leaving {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  min-height: 100svh;
+  background: transparent;
+  pointer-events: none;
+  transition: none;
+}
+.gate.is-leaving::before, .gate.is-leaving::after { opacity: 0; }
+.gate.is-leaving .gate-card {
+  opacity: 0;
+  translate: 0 -1.5rem;
+  transition: opacity 650ms ease, translate 650ms cubic-bezier(.2, .7, .2, 1);
+}
 
 /* Tampilan halaman pembuka dan kolom kode rahasia. */
 .gate {
@@ -97,18 +112,39 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     radial-gradient(ellipse at 50% 45%, rgba(119, 28, 61, .39), transparent 27rem),
     radial-gradient(ellipse at 50% 105%, rgba(77, 19, 42, .33), transparent 32rem);
 }
-.gate-stars {
+.gate::before {
   position: absolute;
-  width: min(80vw, 65rem);
-  height: min(80vw, 65rem);
-  border: 1px solid rgba(240, 203, 181, .065);
-  border-radius: 50%;
-  box-shadow: 0 0 0 6rem rgba(240, 203, 181, .018), 0 0 0 13rem rgba(240, 203, 181, .014);
+  z-index: 0;
+  inset: -14%;
+  background:
+    radial-gradient(ellipse at 17% 18%, rgba(187, 66, 111, .22), transparent 34%),
+    radial-gradient(ellipse at 82% 19%, rgba(122, 50, 83, .25), transparent 35%),
+    radial-gradient(ellipse at 76% 83%, rgba(161, 75, 102, .2), transparent 32%),
+    radial-gradient(ellipse at 20% 78%, rgba(105, 37, 71, .28), transparent 37%),
+    radial-gradient(ellipse at 51% 49%, rgba(82, 26, 52, .18), transparent 43%);
+  content: "";
+  filter: blur(clamp(48px, 8vw, 112px)) saturate(1.25);
+  opacity: .8;
   pointer-events: none;
+  animation: ambient-mesh-drift 24s ease-in-out infinite alternate;
+}
+.gate::after {
+  position: absolute;
+  z-index: 0;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse at 31% 36%, rgba(239, 115, 168, .13), transparent 28%),
+    radial-gradient(ellipse at 70% 67%, rgba(241, 202, 121, .09), transparent 25%),
+    radial-gradient(ellipse at 68% 25%, rgba(176, 105, 145, .11), transparent 27%);
+  content: "";
+  filter: blur(clamp(52px, 9vw, 128px)) saturate(1.2);
+  opacity: .78;
+  pointer-events: none;
+  animation: ambient-glow-breathe 18s ease-in-out infinite alternate;
 }
 .gate-card {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(100%, 31rem);
   padding: clamp(2.2rem, 7vw, 4.3rem) clamp(1.5rem, 7vw, 3.8rem) 2.2rem;
   border: 1px solid rgba(248, 212, 196, .18);
@@ -127,6 +163,12 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   line-height: 1.7;
 }
 .tiny-star { margin-right: .4rem; color: var(--gold); }
+.eyebrow .tiny-star, .hero-footnote span, .gallery-hint span,
+.personal-note span, .wish-afterthought span { display: inline-block; }
+.eyebrow:hover .tiny-star, .hero-footnote:hover span, .gallery-hint:hover span,
+.personal-note:hover span, .wish-afterthought:hover span {
+  animation: sparkle-dance 1.4s ease-in-out infinite;
+}
 .lock-seal {
   display: grid;
   width: 4.3rem;
@@ -220,6 +262,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .gate-footnote { display: block; margin-top: .55rem; font-size: .58rem; letter-spacing: .08em; }
 .gate-orbit {
   position: absolute;
+  z-index: 1;
   width: .5rem;
   height: .5rem;
   border: 1px solid var(--gold);
@@ -233,7 +276,24 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 }
 
 /* Header dan menu navigasi. */
-.site-content { max-width: 1440px; min-height: 100vh; margin: 0 auto; animation: reveal-site 950ms both; }
+.site-content {
+  max-width: 1440px;
+  min-height: 100vh;
+  margin: 0 auto;
+  animation: none;
+  transition: filter 750ms ease, opacity 750ms ease;
+}
+.site-content.is-transitioning { filter: blur(7px); opacity: .58; }
+.site-content.is-revealing-hero #home .hero-copy,
+.site-content.is-revealing-hero #home .hero-image,
+.site-content.is-revealing-hero #home .polaroid-note {
+  opacity: 1;
+  translate: 0 0;
+  transition: opacity 750ms ease, translate 750ms cubic-bezier(.2, .7, .2, 1);
+}
+.site-content.is-revealing-hero #home .hero-copy { transition-delay: 0ms; }
+.site-content.is-revealing-hero #home .hero-image { transition-delay: 260ms; }
+.site-content.is-revealing-hero #home .polaroid-note { transition-delay: 560ms; }
 .topbar {
   display: flex;
   min-height: 4rem;
@@ -453,10 +513,10 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   content: "";
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 180ms ease;
+  transition: transform 260ms ease;
 }
-.chapter-link:hover, .chapter-link.active { color: #fff1eb; }
-.chapter-link.active::after { transform: scaleX(1); }
+.chapter-link:hover, .chapter-link:focus-visible, .chapter-link.active { color: #fff1eb; }
+.chapter-link:hover::after, .chapter-link:focus-visible::after, .chapter-link.active::after { transform: scaleX(1); }
 .chapter-sparkle { color: var(--gold); font-size: .85rem; }
 .section-wrap { position: relative; width: min(100% - 3rem, 67rem); margin: 0 auto; scroll-margin-top: 6.2rem; }
 /* Beranda dan gambar utama. */
@@ -469,8 +529,20 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   padding-top: 5rem;
   padding-bottom: 6rem;
 }
-.hero-copy { position: relative; z-index: 1; padding: 1.5rem 0; }
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem 0;
+  transition: opacity 750ms ease, translate 750ms cubic-bezier(.2, .7, .2, 1);
+}
 .hero h1 { margin-top: 1rem; font-size: clamp(4.4rem, 10vw, 7rem); line-height: .86; }
+.site-content.is-reveal-pending #home .hero-copy,
+.site-content.is-reveal-pending #home .hero-image,
+.site-content.is-reveal-pending #home .polaroid-note {
+  opacity: 0;
+  translate: 0 1.2rem;
+  transition: opacity 750ms ease, translate 750ms cubic-bezier(.2, .7, .2, 1);
+}
 .hero h1 em { display: inline-block; padding-bottom: .08em; color: #f6d49a; }
 .hero-description { max-width: 30rem; margin: 1.55rem 0 1.8rem; color: #d7bbc0; font-size: .87rem; line-height: 1.95; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.2rem; }
@@ -491,6 +563,10 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   box-shadow: 0 .5rem 2rem rgba(197, 53, 111, .19);
   color: #fff8f2;
   font-weight: 600;
+  transition: color 200ms ease, border-color 200ms ease, filter 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+.button-primary:hover, .button-primary:focus-visible {
+  box-shadow: 0 .6rem 2.2rem rgba(197, 53, 111, .3), 0 0 1.25rem rgba(255, 179, 200, .16);
 }
 .button-quiet { color: #ebccd3; }
 .button-quiet:hover { color: white; }
@@ -515,7 +591,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   box-shadow: 0 2rem 5rem rgba(0, 0, 0, .42);
   object-fit: cover;
   object-position: 50% 64%;
-  transition: transform 700ms cubic-bezier(.2, .7, .2, 1), box-shadow 700ms ease;
+  transition: opacity 750ms ease, translate 750ms cubic-bezier(.2, .7, .2, 1), transform 700ms cubic-bezier(.2, .7, .2, 1), box-shadow 700ms ease;
 }
 .hero-art:hover .hero-image { transform: scale(1.025); box-shadow: 0 2.4rem 5.5rem rgba(0, 0, 0, .48); }
 .polaroid-note {
@@ -525,6 +601,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   background: #f1dfcb; box-shadow: 0 1.3rem 3rem rgba(0, 0, 0, .38); color: #582b3d;
   font-family: var(--serif); font-size: .87rem; line-height: 1.35; transform: rotate(5deg);
   animation: note-float 6s ease-in-out infinite;
+  transition: opacity 750ms ease, translate 750ms cubic-bezier(.2, .7, .2, 1);
 }
 .note-star { color: #bd5577; font-size: 1.3rem; }
 .note-signature { align-self: flex-end; color: #a84e6f; font-size: .67rem; font-style: italic; }
@@ -584,12 +661,16 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   cursor: pointer;
   isolation: isolate;
   text-align: left;
-  transition: border-color 200ms ease, transform 200ms ease;
+  transition: all 300ms ease;
 }
-.gallery-card:hover { border-color: rgba(255, 189, 191, .53); transform: translateY(-5px); }
+.gallery-card:hover, .gallery-card:focus-visible {
+  border-color: rgba(255, 189, 191, .63);
+  box-shadow: 0 12px 24px rgba(230, 180, 190, .15);
+  transform: translateY(-6px) scale(1.02);
+}
 .gallery-art { position: absolute; z-index: 0; inset: 0; display: block; overflow: hidden; background: #281322; }
 .gallery-photo { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 500ms ease; }
-.gallery-card:hover .gallery-photo { transform: scale(1.04); }
+.gallery-card:hover .gallery-photo, .gallery-card:focus-visible .gallery-photo { transform: scale(1.04); }
 .gallery-one .gallery-photo { object-position: 50% 34%; }
 .gallery-two .gallery-photo { object-position: 50% 42%; }
 .gallery-three .gallery-photo { object-position: 50% 36%; }
@@ -598,7 +679,8 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .gallery-caption { position: relative; z-index: 1; display: flex; width: 100%; min-height: 5.8rem; flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 1.4rem 0 0; }
 .gallery-tag { margin-bottom: .48rem; color: #f0c6ca; font-size: .51rem; font-weight: 700; letter-spacing: .15em; }
 .gallery-title { max-width: 11rem; font-family: var(--serif); font-size: 1.18rem; line-height: 1.15; }
-.gallery-open { position: absolute; z-index: 1; top: .85rem; right: .9rem; display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border: 1px solid rgba(255, 236, 226, .75); border-radius: 50%; background: rgba(25, 9, 18, .48); color: #fff8ef; font-size: .75rem; }
+.gallery-open { position: absolute; z-index: 1; top: .85rem; right: .9rem; display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border: 1px solid rgba(255, 236, 226, .75); border-radius: 50%; background: rgba(25, 9, 18, .48); color: #fff8ef; font-size: .75rem; transition: transform 300ms ease, background 300ms ease; }
+.gallery-card:hover .gallery-open, .gallery-card:focus-visible .gallery-open { background: rgba(25, 9, 18, .7); transform: rotate(45deg) translate(2px, -2px); }
 .gallery-footnote { margin: 1.4rem 0 0; color: #ad8e97; font-size: .65rem; text-align: right; }
 .gallery-footnote span { color: var(--pink); }
 
@@ -730,8 +812,14 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   font-size: .61rem;
   letter-spacing: .13em;
   text-transform: uppercase;
+  transition: color 200ms ease, text-shadow 200ms ease;
 }
 .envelope-action span { color: var(--pink-light); }
+.letter-envelope-button:hover .envelope-action,
+.letter-envelope-button:focus-visible .envelope-action {
+  color: #fff1d7;
+  text-shadow: 0 0 .9rem rgba(255, 201, 198, .32);
+}
 .letter-envelope-button:hover .letter-envelope,
 .letter-envelope-button:focus-visible .letter-envelope {
   filter: drop-shadow(0 1.2rem 2rem rgba(181, 69, 105, .34));
@@ -1039,6 +1127,18 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 @keyframes art-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-.55rem); } }
 @keyframes note-float { 0%, 100% { transform: rotate(5deg) translateY(0); } 50% { transform: rotate(3deg) translateY(-.4rem); } }
 @keyframes sparkle { 0%, 100% { opacity: .6; scale: .9; } 50% { opacity: 1; scale: 1.15; } }
+@keyframes sparkle-dance {
+  0%, 100% { opacity: .75; transform: rotate(-8deg) scale(.95); }
+  50% { opacity: 1; transform: rotate(12deg) scale(1.14); }
+}
+@keyframes ambient-mesh-drift {
+  from { transform: translate3d(-1.2%, -1%, 0) scale(1); }
+  to { transform: translate3d(1.4%, 1.2%, 0) scale(1.06); }
+}
+@keyframes ambient-glow-breathe {
+  from { opacity: .58; transform: scale(.98); }
+  to { opacity: .88; transform: scale(1.04); }
+}
 
 /* Penyesuaian tampilan untuk tablet dan ponsel. */
 @media (min-width: 1100px) {
