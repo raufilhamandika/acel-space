@@ -31,10 +31,13 @@ Suka sama hasilnya atau mau dibuatkan website kustom/desain seperti ini juga?
 - Amplop interaktif dengan segel foto dan surat pribadi
 - Enam kartu wishes yang bisa dibalik satu per satu
 - Lilin ulang tahun interaktif
-- Animasi lembut dan tampilan yang menyesuaikan layar ponsel
+- Animasi lembut, efek hover gallery dan navigasi, serta kartu wishes dengan
+  tilt 3D ringan pada perangkat yang mendukung pointer
 - Intro burst satu bunga dan hujan bunga berbasis Canvas setelah kode benar;
   memakai empat ilustrasi PNG transparan, kedalaman visual, rotasi 3D semu,
-  partikel berbasis delta time yang dibatasi, dan canvas yang dihapus setelah transisi
+  partikel berbasis delta time yang dibatasi, kartu password yang meluncur
+  memudar, dashboard blur-to-clear dengan reveal judul/foto/polaroid bertahap,
+  serta hujan bunga yang memudar dan dihapus setelah sekitar 2,75 detik
 
 ## Dibuat dengan
 
